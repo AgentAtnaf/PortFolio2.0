@@ -1,0 +1,549 @@
+/* ===================================================
+   CSS VARIABLES
+   =================================================== */
+:root {
+  --color-black:      #000000;
+  --color-white:      #ffffff;
+  --color-charcoal:   #1a1a1a;
+  --color-off-white:  #e8e8e8;
+  --color-gray-mid:   #808080;
+  --color-gray-dark:  #333333;
+  --color-gray-light: #b3b3b3;
+  --color-gray-text:  #666666;
+
+  --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI',
+                 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell',
+                 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+                 sans-serif;
+
+  --font-size-hero:  72px;
+  --font-size-h2:    32px;
+  --font-size-h3:    18px;
+  --font-size-body:  16px;
+  --font-size-small: 14px;
+  --font-size-tiny:  12px;
+
+  --font-weight-light:   300;
+  --font-weight-regular: 400;
+  --font-weight-medium:  500;
+  --font-weight-bold:    600;
+
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-5: 48px;
+  --space-6: 64px;
+  --space-7: 96px;
+
+  --max-width:       960px;
+  --transition-fast: 0.15s ease;
+}
+
+/* ===================================================
+   RESET & BASE
+   =================================================== */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-family);
+  font-size: var(--font-size-body);
+  color: var(--color-charcoal);
+  background: var(--color-white);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: var(--color-black);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-bottom-color var(--transition-fast),
+              color var(--transition-fast),
+              opacity var(--transition-fast);
+}
+
+a:hover {
+  border-bottom-color: currentColor;
+}
+
+a:focus-visible {
+  outline: 2px solid var(--color-black);
+  outline-offset: 4px;
+  border-radius: 1px;
+}
+
+/* ===================================================
+   CONTAINER
+   =================================================== */
+.container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 40px;
+}
+
+/* ===================================================
+   HEADER / NAV
+   =================================================== */
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 60px;
+  background: var(--color-black);
+  border-bottom: 1px solid var(--color-gray-dark);
+  z-index: 1000;
+}
+
+.nav-container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 40px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  font-size: 18px;
+  font-weight: var(--font-weight-medium);
+  color: var(--color-white);
+  border-bottom: none;
+  letter-spacing: 0.3px;
+}
+
+.logo:hover {
+  opacity: 0.8;
+  border-bottom: none;
+}
+
+.logo:focus-visible {
+  outline-color: var(--color-white);
+}
+
+.nav-links {
+  display: flex;
+  gap: var(--space-5);
+  align-items: center;
+}
+
+.nav-links a {
+  font-size: 14px;
+  color: var(--color-gray-light);
+  border-bottom: none;
+  letter-spacing: 0.3px;
+}
+
+.nav-links a:hover {
+  color: var(--color-white);
+  border-bottom: none;
+}
+
+.nav-links a:focus-visible {
+  outline-color: var(--color-white);
+}
+
+/* Hamburger — hidden on desktop */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  width: 40px;
+  height: 40px;
+}
+
+.hamburger span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: var(--color-white);
+  transition: transform var(--transition-fast), opacity var(--transition-fast);
+}
+
+.hamburger:focus-visible {
+  outline: 2px solid var(--color-white);
+  outline-offset: 4px;
+  border-radius: 1px;
+}
+
+/* ===================================================
+   HERO
+   =================================================== */
+.hero {
+  background: var(--color-black);
+  color: var(--color-white);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 100px 40px 60px;
+}
+
+.hero-content {
+  max-width: 800px;
+}
+
+.hero h1 {
+  font-size: var(--font-size-hero);
+  font-weight: var(--font-weight-light);
+  letter-spacing: -1px;
+  line-height: 1.1;
+  margin: 0;
+}
+
+.hero .subtitle {
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-regular);
+  color: var(--color-gray-light);
+  margin-top: var(--space-3);
+}
+
+.hero .tagline {
+  font-size: var(--font-size-body);
+  color: var(--color-gray-mid);
+  margin-top: var(--space-2);
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+  letter-spacing: 0.5px;
+}
+
+/* ===================================================
+   SECTION SHARED
+   =================================================== */
+.about,
+.what-i-do,
+.projects,
+.skills {
+  background: var(--color-white);
+  padding: 80px 40px;
+  border-top: 1px solid var(--color-off-white);
+}
+
+.about h2,
+.what-i-do h2,
+.projects h2,
+.skills h2 {
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-regular);
+  margin-bottom: var(--space-5);
+  border-bottom: 1px solid var(--color-gray-mid);
+  padding-bottom: var(--space-2);
+}
+
+/* ===================================================
+   ABOUT
+   =================================================== */
+.about .container > p {
+  font-size: var(--font-size-body);
+  line-height: 1.8;
+  margin-bottom: 20px;
+  max-width: 800px;
+  color: var(--color-charcoal);
+}
+
+.metadata {
+  font-size: var(--font-size-tiny);
+  color: var(--color-gray-mid);
+  letter-spacing: 0.5px;
+  margin-top: var(--space-4);
+}
+
+/* ===================================================
+   WHAT I BUILD
+   =================================================== */
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--space-5);
+}
+
+.service {
+  border-left: 2px solid var(--color-black);
+  padding-left: 20px;
+}
+
+.service h3 {
+  font-size: var(--font-size-h3);
+  font-weight: var(--font-weight-medium);
+  margin-bottom: 12px;
+}
+
+.service p {
+  font-size: var(--font-size-small);
+  color: var(--color-gray-dark);
+  line-height: 1.7;
+}
+
+/* ===================================================
+   PROJECTS
+   =================================================== */
+.projects-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.project {
+  border-left: 2px solid var(--color-black);
+  padding-left: 20px;
+}
+
+.project h3 {
+  font-size: var(--font-size-h3);
+  font-weight: var(--font-weight-medium);
+  margin-bottom: 12px;
+}
+
+.project .description {
+  font-size: var(--font-size-small);
+  color: var(--color-charcoal);
+  line-height: 1.7;
+  margin-bottom: 10px;
+}
+
+.project .tech {
+  font-size: 13px;
+  color: var(--color-gray-text);
+  font-weight: var(--font-weight-medium);
+  margin-bottom: 6px;
+}
+
+.project .status {
+  font-size: var(--font-size-tiny);
+  color: var(--color-gray-mid);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ===================================================
+   SKILLS
+   =================================================== */
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: var(--space-5);
+}
+
+.skill-category h3 {
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-bold);
+  margin-bottom: 12px;
+}
+
+.skill-category p {
+  font-size: var(--font-size-small);
+  color: var(--color-charcoal);
+  line-height: 1.8;
+}
+
+/* ===================================================
+   FOOTER
+   =================================================== */
+.footer {
+  background: var(--color-black);
+  color: var(--color-white);
+  padding: 80px 40px;
+  text-align: center;
+  border-top: 1px solid var(--color-gray-dark);
+}
+
+.footer h2 {
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-regular);
+  margin-bottom: var(--space-3);
+  border-bottom: 1px solid var(--color-gray-dark);
+  padding-bottom: var(--space-3);
+}
+
+.footer > .container > p {
+  font-size: var(--font-size-body);
+  color: var(--color-gray-light);
+  line-height: 1.8;
+  max-width: 600px;
+  margin: 0 auto var(--space-3);
+}
+
+.contact-info {
+  margin: var(--space-4) 0;
+}
+
+.contact-info a {
+  font-size: 20px;
+  color: var(--color-white);
+  font-weight: var(--font-weight-medium);
+  border-bottom: 1px solid var(--color-white);
+}
+
+.contact-info a:hover {
+  opacity: 0.7;
+}
+
+.contact-info a:focus-visible {
+  outline-color: var(--color-white);
+}
+
+.social-links {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-4);
+  margin: var(--space-4) 0;
+}
+
+.social-links a {
+  color: var(--color-gray-light);
+  font-size: var(--font-size-small);
+  border-bottom: none;
+}
+
+.social-links a:hover {
+  color: var(--color-white);
+  border-bottom: none;
+}
+
+.social-links a:focus-visible {
+  outline-color: var(--color-white);
+}
+
+.copyright {
+  font-size: var(--font-size-tiny);
+  color: var(--color-gray-text);
+  margin-top: var(--space-5);
+}
+
+/* ===================================================
+   RESPONSIVE — MOBILE  (< 768px)
+   =================================================== */
+@media (max-width: 767px) {
+  .container {
+    padding: 0 20px;
+  }
+
+  .nav-container {
+    padding: 0 20px;
+  }
+
+  /* Show hamburger, hide inline nav */
+  .hamburger {
+    display: flex;
+  }
+
+  .nav-links {
+    display: none;
+    flex-direction: column;
+    gap: 0;
+    position: fixed;
+    top: 60px;
+    right: 0;
+    width: 240px;
+    background: var(--color-black);
+    border-left: 1px solid var(--color-gray-dark);
+    border-bottom: 1px solid var(--color-gray-dark);
+    padding: var(--space-2) 0;
+  }
+
+  .nav-links.open {
+    display: flex;
+  }
+
+  .nav-links a {
+    display: block;
+    padding: 14px 24px;
+    font-size: var(--font-size-body);
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+  }
+
+  .hero h1 {
+    font-size: 48px;
+    letter-spacing: -0.5px;
+  }
+
+  .hero .subtitle {
+    font-size: 20px;
+  }
+
+  .about,
+  .what-i-do,
+  .projects,
+  .skills {
+    padding: 60px 20px;
+  }
+
+  .footer {
+    padding: 60px 20px;
+  }
+
+  .about h2,
+  .what-i-do h2,
+  .projects h2,
+  .skills h2 {
+    font-size: 24px;
+  }
+
+  .footer h2 {
+    font-size: 24px;
+  }
+
+  .services-grid,
+  .skills-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .contact-info a {
+    font-size: 16px;
+  }
+}
+
+/* ===================================================
+   RESPONSIVE — TABLET  (768px – 1023px)
+   =================================================== */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .container {
+    max-width: 720px;
+    padding: 0 30px;
+  }
+
+  .nav-container {
+    padding: 0 30px;
+  }
+
+  .hero h1 {
+    font-size: 56px;
+  }
+
+  .services-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* ===================================================
+   REDUCED MOTION
+   =================================================== */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *, *::before, *::after {
+    transition-duration: 0.01ms !important;
+  }
+}
