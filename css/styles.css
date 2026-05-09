@@ -326,11 +326,32 @@ a:focus-visible {
   margin-bottom: 6px;
 }
 
-.project .status {
+.project .project-meta {
   font-size: var(--font-size-tiny);
   color: var(--color-gray-mid);
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  margin-bottom: 12px;
+}
+
+.project-links {
+  display: flex;
+  gap: var(--space-3);
+  margin-top: 4px;
+}
+
+.project-links a {
+  font-size: var(--font-size-tiny);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-black);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid var(--color-black);
+}
+
+.project-links a:hover {
+  color: var(--color-gray-mid);
+  border-bottom-color: var(--color-gray-mid);
 }
 
 /* ===================================================
