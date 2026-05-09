@@ -225,6 +225,17 @@ a:focus-visible {
   letter-spacing: 0.5px;
 }
 
+.current-role {
+  font-size: var(--font-size-tiny);
+  color: var(--color-gray-dark);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-top: var(--space-4);
+  border: 1px solid var(--color-gray-dark);
+  display: inline-block;
+  padding: 6px 14px;
+}
+
 /* ===================================================
    SECTION SHARED
    =================================================== */
