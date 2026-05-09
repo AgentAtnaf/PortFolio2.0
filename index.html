@@ -30,6 +30,11 @@
         <a href="#skills">Skills</a>
         <a href="#contact">Contact</a>
       </nav>
+
+      <button class="theme-toggle" id="theme-toggle" aria-label="Toggle light/dark mode" title="Toggle theme">
+        <span class="theme-icon-dark">◑</span>
+        <span class="theme-icon-light">◐</span>
+      </button>
     </div>
   </header>
 
@@ -48,9 +53,9 @@
     <!-- ABOUT -->
     <section id="about" class="about" aria-labelledby="about-heading">
       <div class="container">
-        <h2 id="about-heading">About Me</h2>
+        <h2 class="reveal" id="about-heading">About Me</h2>
 
-        <p>
+        <p class="reveal reveal-delay-1">
           I'm an Odoo developer focused on building custom modules,
           optimizing business processes, and tracking down errors before
           users find them.
@@ -109,7 +114,7 @@
     <!-- WHAT I BUILD -->
     <section id="work" class="what-i-do" aria-labelledby="work-heading">
       <div class="container">
-        <h2 id="work-heading">What I Build</h2>
+        <h2 class="reveal" id="work-heading">What I Build</h2>
 
         <div class="services-grid">
           <div class="service">
@@ -153,10 +158,10 @@
     <!-- PROJECTS -->
     <section id="projects" class="projects" aria-labelledby="projects-heading">
       <div class="container">
-        <h2 id="projects-heading">Selected Projects</h2>
+        <h2 class="reveal" id="projects-heading">Selected Projects</h2>
 
         <div class="projects-list">
-          <article class="project">
+          <article class="project reveal reveal-delay-1">
             <h3>Silent Face — 2D Survival Horror</h3>
             <p class="description">
               A 2D survival horror game built around atmospheric tension and player choice.
@@ -172,7 +177,7 @@
             </div>
           </article>
 
-          <article class="project">
+          <article class="project reveal reveal-delay-2">
             <h3>My-Ammo — 2D Co-op Tower Defense</h3>
             <p class="description">
               A co-op tower defense where two players must collaborate under pressure.
@@ -187,7 +192,7 @@
             </div>
           </article>
 
-          <article class="project">
+          <article class="project reveal reveal-delay-3">
             <h3>Green Night — 2D Tower Defense Survival</h3>
             <p class="description">
               Resource management survival game where players scavenge, craft, and trade
@@ -209,7 +214,7 @@
     <!-- SKILLS -->
     <section id="skills" class="skills" aria-labelledby="skills-heading">
       <div class="container">
-        <h2 id="skills-heading">Skills &amp; Tools</h2>
+        <h2 class="reveal" id="skills-heading">Skills &amp; Tools</h2>
 
         <div class="skills-grid">
           <div class="skill-category">
@@ -280,7 +285,19 @@
   </footer>
 
   <script>
-    // Hamburger menu toggle — only JS on the page
+    // Theme toggle
+    const themeToggle = document.getElementById('theme-toggle');
+    const saved = localStorage.getItem('theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', saved);
+
+    themeToggle.addEventListener('click', () => {
+      const current = document.documentElement.getAttribute('data-theme');
+      const next    = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
+    });
+
+    // Hamburger toggle
     const hamburger = document.getElementById('hamburger');
     const navMenu   = document.getElementById('nav-menu');
 
@@ -290,13 +307,31 @@
       navMenu.classList.toggle('open');
     });
 
-    // Close menu when a nav link is clicked
     navMenu.querySelectorAll('a').forEach(link => {
       link.addEventListener('click', () => {
         hamburger.setAttribute('aria-expanded', 'false');
         navMenu.classList.remove('open');
       });
     });
+
+    // Header scroll shadow
+    const header = document.querySelector('.header');
+    window.addEventListener('scroll', () => {
+      header.classList.toggle('scrolled', window.scrollY > 10);
+    }, { passive: true });
+
+    // Scroll reveal
+    const revealEls = document.querySelectorAll('.reveal');
+    const observer  = new IntersectionObserver((entries) => {
+      entries.forEach(el => {
+        if (el.isIntersecting) {
+          el.target.classList.add('visible');
+          observer.unobserve(el.target);
+        }
+      });
+    }, { threshold: 0.12 });
+
+    revealEls.forEach(el => observer.observe(el));
   </script>
 
 </body>

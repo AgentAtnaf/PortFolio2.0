@@ -37,7 +37,10 @@
   --space-7: 96px;
 
   --max-width:       960px;
-  --transition-fast: 0.15s ease;
+  --transition-fast:   0.15s ease;
+  --transition-normal: 0.3s ease;
+  --transition-slow:   0.6s ease;
+  --ease-out-quart:    cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 /* ===================================================
@@ -185,6 +188,7 @@ a:focus-visible {
    HERO
    =================================================== */
 .hero {
+  position: relative;
   background: var(--color-black);
   color: var(--color-white);
   min-height: 100vh;
@@ -194,18 +198,43 @@ a:focus-visible {
   align-items: center;
   text-align: center;
   padding: 100px 40px 60px;
+  overflow: hidden;
+}
+
+/* subtle galaxy depth — two faint nebula glows */
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 70% 55% at 25% 60%, rgba(40, 30, 80, 0.35) 0%, transparent 65%),
+    radial-gradient(ellipse 55% 45% at 78% 30%, rgba(20, 40, 80, 0.25) 0%, transparent 60%);
+  pointer-events: none;
 }
 
 .hero-content {
+  position: relative;
   max-width: 800px;
 }
 
+/* galaxy gradient on the name */
 .hero h1 {
   font-size: var(--font-size-hero);
   font-weight: var(--font-weight-light);
   letter-spacing: -1px;
   line-height: 1.1;
   margin: 0;
+  background: linear-gradient(
+    125deg,
+    #ffffff   0%,
+    #d4deff  35%,
+    #ffffff  55%,
+    #c8d8ff  80%,
+    #ffffff 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .hero .subtitle {
@@ -225,13 +254,14 @@ a:focus-visible {
   letter-spacing: 0.5px;
 }
 
+/* badge — brighter so it reads against black */
 .current-role {
   font-size: var(--font-size-tiny);
-  color: var(--color-gray-dark);
+  color: var(--color-gray-mid);
   text-transform: uppercase;
   letter-spacing: 1.5px;
   margin-top: var(--space-4);
-  border: 1px solid var(--color-gray-dark);
+  border: 1px solid var(--color-gray-mid);
   display: inline-block;
   padding: 6px 14px;
 }
@@ -652,6 +682,307 @@ a:focus-visible {
 }
 
 /* ===================================================
+   THEME TOGGLE BUTTON
+   =================================================== */
+.theme-toggle {
+  background: none;
+  border: 1px solid var(--color-gray-dark);
+  color: var(--color-gray-light);
+  cursor: pointer;
+  font-size: 16px;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color var(--transition-fast), color var(--transition-fast),
+              background var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.theme-toggle:hover {
+  border-color: var(--color-gray-mid);
+  color: var(--color-white);
+}
+
+.theme-toggle:focus-visible {
+  outline: 2px solid var(--color-white);
+  outline-offset: 3px;
+}
+
+/* show correct icon per theme */
+[data-theme="dark"]  .theme-icon-light { display: none; }
+[data-theme="light"] .theme-icon-dark  { display: none; }
+
+/* ===================================================
+   LIGHT THEME OVERRIDES
+   =================================================== */
+[data-theme="light"] {
+  /* header */
+  .header {
+    background: var(--color-white);
+    border-bottom-color: var(--color-off-white);
+    box-shadow: 0 1px 0 var(--color-off-white);
+  }
+
+  .logo { color: var(--color-black); }
+
+  .nav-links a { color: var(--color-gray-dark); }
+  .nav-links a:hover { color: var(--color-black); }
+
+  .hamburger span { background: var(--color-black); }
+
+  .theme-toggle {
+    border-color: var(--color-off-white);
+    color: var(--color-charcoal);
+  }
+  .theme-toggle:hover {
+    border-color: var(--color-gray-mid);
+    color: var(--color-black);
+    background: var(--color-off-white);
+  }
+
+  /* hero — flip to white */
+  .hero {
+    background: var(--color-white);
+    color: var(--color-black);
+  }
+
+  .hero::before {
+    background:
+      radial-gradient(ellipse 70% 55% at 25% 60%, rgba(180, 160, 255, 0.08) 0%, transparent 65%),
+      radial-gradient(ellipse 55% 45% at 78% 30%, rgba(160, 180, 255, 0.06) 0%, transparent 60%);
+  }
+
+  .hero h1 {
+    background: linear-gradient(125deg, #000000 0%, #2a2060 35%, #000000 55%, #1a3060 80%, #000000 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero .subtitle { color: var(--color-gray-dark); }
+  .hero .tagline  { color: var(--color-gray-mid);  }
+
+  .current-role {
+    color: var(--color-gray-dark);
+    border-color: var(--color-gray-dark);
+  }
+  .current-role:hover {
+    background: var(--color-black);
+    color: var(--color-white);
+    border-color: var(--color-black);
+  }
+
+  /* nav mobile panel */
+  .nav-links {
+    background: var(--color-white);
+    border-left-color: var(--color-off-white);
+    border-bottom-color: var(--color-off-white);
+  }
+
+  /* footer */
+  .footer {
+    background: var(--color-off-white);
+    color: var(--color-black);
+    border-top-color: var(--color-off-white);
+  }
+
+  .footer h2 { border-bottom-color: #d0d0d0; }
+
+  .footer > .container > p { color: var(--color-gray-dark); }
+
+  .contact-info a { color: var(--color-black); border-bottom-color: var(--color-black); }
+
+  .social-links a { color: var(--color-gray-dark); }
+  .social-links a:hover { color: var(--color-black); }
+
+  .copyright { color: var(--color-gray-mid); }
+}
+
+/* ===================================================
+   KEYFRAMES
+   =================================================== */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ===================================================
+   HERO ENTRANCE ANIMATIONS
+   =================================================== */
+.hero h1 {
+  animation: fadeUp 0.9s var(--ease-out-quart) both;
+}
+
+.hero .subtitle {
+  animation: fadeUp 0.9s var(--ease-out-quart) 0.18s both;
+}
+
+.hero .tagline {
+  animation: fadeUp 0.9s var(--ease-out-quart) 0.32s both;
+}
+
+.current-role {
+  animation: fadeUp 0.9s var(--ease-out-quart) 0.46s both;
+}
+
+/* ===================================================
+   SCROLL REVEAL
+   =================================================== */
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity var(--transition-slow) var(--ease-out-quart),
+              transform var(--transition-slow) var(--ease-out-quart);
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+.reveal-delay-4 { transition-delay: 0.4s; }
+.reveal-delay-5 { transition-delay: 0.5s; }
+
+/* ===================================================
+   HOVER — PROJECTS
+   =================================================== */
+.project {
+  transition: padding-left var(--transition-normal),
+              border-left-color var(--transition-normal);
+}
+
+.project:hover {
+  padding-left: 28px;
+  border-left-color: var(--color-gray-mid);
+}
+
+/* ===================================================
+   HOVER — SERVICES
+   =================================================== */
+.service {
+  transition: padding-left var(--transition-normal),
+              border-left-color var(--transition-normal);
+}
+
+.service:hover {
+  padding-left: 28px;
+  border-left-color: var(--color-gray-mid);
+}
+
+/* ===================================================
+   HOVER — SKILL CATEGORIES
+   =================================================== */
+.skill-category {
+  padding: 20px;
+  border-left: 2px solid transparent;
+  transition: border-left-color var(--transition-normal),
+              padding-left var(--transition-normal);
+}
+
+.skill-category:hover {
+  border-left-color: var(--color-black);
+}
+
+/* ===================================================
+   HAMBURGER — ANIMATED TO X
+   =================================================== */
+.hamburger span {
+  transform-origin: center;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+}
+
+.hamburger[aria-expanded="true"] span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.hamburger[aria-expanded="true"] span:nth-child(2) {
+  opacity: 0;
+  transform: scaleX(0);
+}
+
+.hamburger[aria-expanded="true"] span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+/* ===================================================
+   HEADER — SCROLL SHADOW
+   =================================================== */
+.header.scrolled {
+  box-shadow: 0 1px 20px rgba(0, 0, 0, 0.4);
+  transition: box-shadow var(--transition-normal);
+}
+
+/* ===================================================
+   CURRENT ROLE BADGE HOVER
+   =================================================== */
+.current-role {
+  transition: background var(--transition-fast),
+              color var(--transition-fast);
+}
+
+.current-role:hover {
+  background: var(--color-gray-mid);
+  color: var(--color-black);
+  border-color: var(--color-gray-mid);
+}
+
+/* ===================================================
+   RESPONSIVE — SMALL MOBILE (< 480px)
+   =================================================== */
+@media (max-width: 479px) {
+  .hero h1 {
+    font-size: 36px;
+    letter-spacing: -0.5px;
+  }
+
+  .hero .subtitle {
+    font-size: 18px;
+  }
+
+  .hero .tagline {
+    font-size: 14px;
+  }
+
+  .current-role {
+    font-size: 10px;
+    padding: 5px 10px;
+  }
+
+  .about,
+  .what-i-do,
+  .projects,
+  .skills {
+    padding: 48px 16px;
+  }
+
+  .footer {
+    padding: 48px 16px;
+  }
+
+  .social-links {
+    flex-direction: column;
+    gap: var(--space-2);
+    align-items: center;
+  }
+
+  .project-links {
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+}
+
+/* ===================================================
    REDUCED MOTION
    =================================================== */
 @media (prefers-reduced-motion: reduce) {
@@ -659,7 +990,23 @@ a:focus-visible {
     scroll-behavior: auto;
   }
 
+  .hero h1,
+  .hero .subtitle,
+  .hero .tagline,
+  .current-role {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
   *, *::before, *::after {
     transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
   }
 }
