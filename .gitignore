@@ -1,0 +1,9 @@
+# Design experiments — local only
+galaxy-v*.html
+skill-v*.html
+palettes.html
+
+# Project notes
+design.md
+CLAUDE.md
+.claude/

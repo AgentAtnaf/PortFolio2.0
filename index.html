@@ -3,335 +3,1186 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ingkarat Chanyourg | Odoo Developer</title>
   <meta name="description" content="Ingkarat Chanyourg — Odoo Developer. Building custom modules, automating business processes, and shipping reliable code.">
   <meta property="og:title" content="Ingkarat Chanyourg | Odoo Developer">
   <meta property="og:description" content="Building business logic, fixing errors, shipping code.">
   <meta property="og:type" content="website">
-  <title>Ingkarat Chanyourg | Odoo Developer</title>
-  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    @property --g1 { syntax: '<color>'; inherits: false; initial-value: #f0f0ff; }
+    @property --g2 { syntax: '<color>'; inherits: false; initial-value: #c0c0ff; }
+    @property --g3 { syntax: '<color>'; inherits: false; initial-value: #8080cc; }
+
+    :root {
+      --bg:        #05050f;
+      --surface:   rgba(10, 10, 30, 0.82);
+      --border:    rgba(120, 100, 220, 0.13);
+      --white:     #e8e8ff;
+      --dim:       #6060a0;
+      --muted:     #282848;
+      --teal:      #c8c8ff;
+      --amber:     #8080cc;
+      --violet:    #4040aa;
+      --teal-glow: rgba(160, 140, 255, 0.07);
+      --mono: 'SF Mono', 'Fira Code', 'Cascadia Code', 'Consolas', monospace;
+      --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+
+    ::-webkit-scrollbar              { width: 3px; }
+    ::-webkit-scrollbar-track        { background: var(--bg); }
+    ::-webkit-scrollbar-thumb        { background: rgba(140,120,255,0.22); border-radius: 2px; }
+    ::-webkit-scrollbar-thumb:hover  { background: var(--teal); }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--sans);
+      background: var(--bg);
+      color: var(--white);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    a { color: var(--dim); text-decoration: none; transition: color 0.2s; }
+    a:hover { color: var(--white); }
+
+    /* ── Custom cursor ── */
+    #cur-dot {
+      position: fixed; pointer-events: none; z-index: 9999;
+      width: 5px; height: 5px;
+      background: var(--white);
+      border-radius: 50%;
+      transform: translate(-50%,-50%);
+      box-shadow: 0 0 8px rgba(180,160,255,0.75);
+    }
+    #cur-ring {
+      position: fixed; pointer-events: none; z-index: 9998;
+      width: 26px; height: 26px;
+      border: 1px solid rgba(180,160,255,0.38);
+      border-radius: 50%;
+      transform: translate(-50%,-50%);
+      transition: width .18s, height .18s, border-color .18s;
+    }
+    #cur-ring.big { width: 42px; height: 42px; border-color: rgba(180,160,255,0.65); }
+
+    /* ── Scanlines ── */
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      background: repeating-linear-gradient(
+        0deg, transparent, transparent 2px,
+        rgba(0,0,0,0.04) 2px, rgba(0,0,0,0.04) 4px
+      );
+      pointer-events: none;
+      z-index: 600;
+    }
+
+    /* ── Subtle ripple rings ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background:
+        radial-gradient(circle at 50% 108%, transparent 28%, rgba(120,100,220,0.015) 29%, transparent 30%),
+        radial-gradient(circle at 50% 108%, transparent 38%, rgba(120,100,220,0.010) 39%, transparent 40%),
+        radial-gradient(circle at 50% 108%, transparent 50%, rgba(120,100,220,0.007) 51%, transparent 52%),
+        radial-gradient(circle at 50% 108%, transparent 64%, rgba(120,100,220,0.004) 65%, transparent 66%);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* ── Canvas ── */
+    #gc { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+
+    /* ── Nebula — deep indigo ── */
+    .nebula { position: fixed; inset: 0; z-index: 1; pointer-events: none; overflow: hidden; }
+    .nb {
+      position: absolute; border-radius: 50%;
+      filter: blur(120px); mix-blend-mode: screen;
+    }
+    .nb1 {
+      width: 65vw; height: 58vh; top: -22vh; left: -8vw;
+      background: radial-gradient(ellipse, rgba(40,20,140,0.22), transparent 70%);
+      animation: nbf 22s ease-in-out infinite alternate;
+    }
+    .nb2 {
+      width: 52vw; height: 48vh; top: 8vh; right: -14vw;
+      background: radial-gradient(ellipse, rgba(60,40,160,0.14), transparent 70%);
+      animation: nbf 30s ease-in-out infinite alternate-reverse;
+    }
+    .nb3 {
+      width: 36vw; height: 36vh; bottom: 4vh; left: 28vw;
+      background: radial-gradient(ellipse, rgba(80,60,180,0.09), transparent 70%);
+      animation: nbf 26s ease-in-out infinite alternate;
+    }
+    @keyframes nbf {
+      from { transform: translate(0,0) scale(1); }
+      to   { transform: translate(4vw,5vh) scale(1.15); }
+    }
+
+    /* ── Shooting stars ── */
+    .sts { position: fixed; inset: 0; z-index: 2; pointer-events: none; overflow: hidden; }
+    .st {
+      position: absolute; width: 1px; height: 90px; opacity: 0;
+      background: linear-gradient(to bottom, transparent, rgba(190,180,255,0.80), transparent);
+      animation: stf var(--d,3s) var(--dl,0s) ease-in infinite;
+    }
+    .st:nth-child(1){--d:3s;  --dl:3s;   top:-5%;left:12%; transform:rotate(13deg);}
+    .st:nth-child(2){--d:3.5s;--dl:9s;   top:-5%;left:42%; transform:rotate(19deg);}
+    .st:nth-child(3){--d:2.8s;--dl:16s;  top:-5%;left:67%; transform:rotate(11deg);}
+    .st:nth-child(4){--d:4s;  --dl:24s;  top:-5%;left:23%; transform:rotate(15deg);}
+    .st:nth-child(5){--d:2.5s;--dl:33s;  top:-5%;left:80%; transform:rotate(21deg);}
+    .st:nth-child(6){--d:3.2s;--dl:42s;  top:-5%;left:52%; transform:rotate(9deg);}
+    @keyframes stf {
+      0%   { opacity:0; transform:translateY(-40px) rotate(inherit); }
+      5%   { opacity:1; }
+      80%  { opacity:0.5; }
+      100% { opacity:0; transform:translateY(110vh) rotate(inherit); }
+    }
+
+    /* ── Header ── */
+    .hdr {
+      position: fixed; top:0; left:0; width:100%; height:54px;
+      z-index: 1000;
+      transition: background .3s, border-color .3s;
+    }
+    .hdr.solid {
+      background: rgba(5,5,15,0.92);
+      backdrop-filter: blur(22px) saturate(180%);
+      border-bottom: 1px solid var(--border);
+    }
+    .hdr-in {
+      max-width: 1120px; margin: 0 auto; padding: 0 40px;
+      height: 100%; display: flex; align-items: center; justify-content: space-between;
+    }
+    .logo {
+      font-family: var(--mono); font-size: 13px; font-weight: 700;
+      color: var(--teal); letter-spacing: .3px;
+      display: flex; align-items: center; gap: 7px;
+    }
+    .logo::before {
+      content: '';
+      width: 5px; height: 5px; border-radius: 50%;
+      background: var(--teal); box-shadow: 0 0 7px rgba(180,160,255,0.65);
+      animation: pulse 2s ease-in-out infinite;
+    }
+    .logo-br { color: var(--muted); font-weight: 300; }
+
+    nav { display: flex; align-items: center; gap: 4px; }
+    nav a {
+      font-family: var(--mono); font-size: 11px; color: var(--dim);
+      padding: 5px 12px; border: 1px solid transparent; border-radius: 2px;
+      letter-spacing: .4px;
+      transition: color .2s, border-color .2s, background .2s;
+    }
+    nav a:hover {
+      color: var(--white); border-color: var(--border);
+      background: var(--teal-glow);
+    }
+
+    /* ── Hero ── */
+    .hero {
+      position: relative; z-index: 10;
+      min-height: 100vh; padding: 54px 40px 0;
+      display: grid; grid-template-rows: 1fr auto;
+      overflow: hidden;
+    }
+    .hero-body {
+      max-width: 1120px; margin: 0 auto; width: 100%;
+      display: grid; grid-template-columns: 1fr 380px; gap: 48px;
+      align-items: center; padding: 72px 0 40px;
+    }
+    .hero-text { display: flex; flex-direction: column; }
+    .hero-art {
+      opacity: 0; animation: fi 1s ease 2.2s forwards;
+      display: flex; align-items: center; justify-content: center;
+    }
+    #oc { display: block; }
+
+    /* HUD readout */
+    .hud {
+      font-family: var(--mono); font-size: 10px;
+      color: var(--muted); letter-spacing: 1.8px;
+      margin-bottom: 36px;
+      display: flex; align-items: center; gap: 18px; flex-wrap: wrap;
+      opacity: 0; animation: fi .5s ease .4s forwards;
+    }
+    .hud em { color: var(--teal); font-style: normal; }
+    .hud-dot {
+      width: 5px; height: 5px; border-radius: 50%;
+      background: var(--teal); box-shadow: 0 0 6px rgba(180,160,255,0.65); flex-shrink: 0;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.3;transform:scale(.55)} }
+
+    /* Big name */
+    .name-wrap {
+      position: relative; margin-bottom: 20px;
+      opacity: 0; animation: fi .8s ease .75s forwards;
+    }
+    .name-fill {
+      display: block;
+      font-size: clamp(48px, 8vw, 100px);
+      font-weight: 200; letter-spacing: -2.5px; line-height: 1.08;
+      --g1: #f0f0ff; --g2: #c0c0ff; --g3: #8080cc;
+      background: linear-gradient(138deg, var(--g1) 0%, var(--g2) 44%, var(--g3) 82%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      animation: gs 9s ease-in-out 2s infinite alternate;
+    }
+    .name-ghost {
+      display: block; position: absolute; inset: 0;
+      font-size: clamp(48px, 8vw, 100px);
+      font-weight: 200; letter-spacing: -2.5px; line-height: 1.08;
+      -webkit-text-stroke: 1px rgba(180,160,255,0.06);
+      color: transparent; pointer-events: none; user-select: none;
+      z-index: -1;
+    }
+    @keyframes gs {
+      0%   { --g2: #c0c0ff; --g3: #7070cc; }
+      40%  { --g2: #e0e0ff; --g3: #9898dd; }
+      100% { --g2: #a8a8ff; --g3: #5858bb; }
+    }
+
+    .role {
+      font-family: var(--mono); font-size: clamp(13px, 1.8vw, 17px);
+      color: var(--teal); letter-spacing: 2px;
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 14px;
+      opacity: 0; animation: fi .6s ease 1.2s forwards;
+    }
+    .role::before { content: '//'; color: var(--muted); }
+
+    .tagline {
+      font-size: 15px; color: var(--dim);
+      line-height: 1.75; max-width: 540px;
+      overflow: hidden; white-space: nowrap; width: 0;
+      border-right: 2px solid var(--teal);
+      animation: tw 1.8s steps(54,end) 1.7s forwards,
+                 blink .8s step-end 3.5s 5;
+    }
+    @keyframes tw    { to { width: 100%; } }
+    @keyframes blink { 50% { border-right-color: transparent; } }
+
+    .pills {
+      display: flex; gap: 10px; flex-wrap: wrap;
+      margin-top: 40px;
+      opacity: 0; animation: fi .6s ease 2s forwards;
+    }
+    .pill {
+      font-family: var(--mono); font-size: 10px;
+      color: var(--dim); border: 1px solid var(--border);
+      padding: 6px 14px; border-radius: 2px;
+      display: flex; align-items: center; gap: 6px;
+      transition: color .2s, border-color .2s, background .2s;
+    }
+    .pill:hover { color: var(--white); border-color: rgba(180,160,255,.35); background: var(--teal-glow); }
+    .pill-key { color: var(--muted); }
+
+    .hero-foot {
+      max-width: 1120px; margin: 0 auto; width: 100%;
+      padding: 18px 0;
+      border-top: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      opacity: 0; animation: fi .6s ease 2.5s forwards;
+    }
+    .scr-hint {
+      font-family: var(--mono); font-size: 9px;
+      text-transform: uppercase; letter-spacing: 3px; color: var(--muted);
+      display: flex; align-items: center; gap: 12px;
+    }
+    .scr-line {
+      width: 44px; height: 1px;
+      background: linear-gradient(to right, var(--teal), transparent);
+      animation: sp 2s ease-in-out infinite;
+    }
+    @keyframes sp { 0%,100%{transform:scaleX(1);opacity:.4} 50%{transform:scaleX(.5);opacity:1} }
+    .vtag { font-family:var(--mono); font-size:9px; color:var(--muted); letter-spacing:1px; }
+
+    @keyframes fi { to { opacity: 1; } }
+
+    /* ── Page wrapper ── */
+    .page { position: relative; z-index: 10; max-width: 1120px; margin: 0 auto; padding: 0 40px; }
+
+    /* ── Section ── */
+    .sec { padding: 80px 0; border-top: 1px solid var(--border); }
+    .sec-lbl {
+      font-family: var(--mono); font-size: 9px;
+      text-transform: uppercase; letter-spacing: 3px; color: var(--muted);
+      margin-bottom: 8px; display: flex; align-items: center; gap: 10px;
+    }
+    .sec-lbl::before { content: attr(data-n); color: rgba(180,160,255,0.22); font-size: 11px; }
+    .sec-h {
+      font-size: 30px; font-weight: 300; color: var(--white);
+      letter-spacing: -.4px; margin-bottom: 40px;
+    }
+    .sec-h em { font-style: normal; color: var(--teal); }
+
+    /* ── About ── */
+    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 52px; align-items: start; }
+    .atext p { font-size: 15px; line-height: 1.85; color: var(--dim); margin-bottom: 16px; }
+    .atext strong { color: var(--white); font-weight: 500; }
+
+    .dpanel {
+      background: rgba(14, 12, 38, 0.82);
+      border: 1px solid rgba(160,140,255,0.22);
+      padding: 28px; position: relative;
+      box-shadow: 0 0 40px rgba(80,60,180,0.12), inset 0 0 60px rgba(10,8,30,0.4);
+    }
+    .dpanel::before,.dpanel::after {
+      content:''; position:absolute; width:14px; height:14px;
+      border-color: rgba(180,160,255,.55); border-style:solid;
+    }
+    .dpanel::before { top:-1px;left:-1px; border-width:1.5px 0 0 1.5px; }
+    .dpanel::after  { bottom:-1px;right:-1px; border-width:0 1.5px 1.5px 0; }
+
+    .drow {
+      display: flex; justify-content: space-between; align-items: baseline;
+      padding: 11px 0; border-bottom: 1px solid rgba(120,100,220,.12); font-size: 13px;
+    }
+    .drow:last-child { border-bottom: none; }
+    .dk { font-family:var(--mono); font-size:10px; text-transform:uppercase; letter-spacing:1.5px; color: rgba(160,148,220,0.65); }
+    .dv { color: rgba(210,205,255,0.88); text-align:right; max-width:60%; font-size:14px; }
+    .dv.hi { color: var(--teal); text-shadow: 0 0 12px rgba(180,160,255,0.4); }
+
+    /* ── Timeline ── */
+    .tl { position:relative; padding-left:26px; }
+    .tl::before {
+      content:''; position:absolute; left:0; top:8px; bottom:8px;
+      width:1px; background:linear-gradient(to bottom, var(--teal), var(--muted), transparent);
+    }
+    .tli { position:relative; margin-bottom:36px; }
+    .tli::before {
+      content:''; position:absolute; left:-30px; top:6px;
+      width:7px; height:7px; border-radius:50%;
+      background:var(--bg); border:1.5px solid var(--teal);
+      box-shadow:0 0 8px rgba(180,160,255,.30);
+    }
+    .tl-dt {
+      font-family:var(--mono); font-size:10px; text-transform:uppercase;
+      letter-spacing:1.5px; color:var(--teal); display:block; margin-bottom:4px;
+    }
+    .tl-t { font-size:15px; font-weight:500; color:var(--white); margin-bottom:3px; }
+    .tl-s { font-size:12px; color:var(--muted); margin-bottom:7px; }
+    .tl-b { font-size:13px; color:var(--dim); line-height:1.7; max-width:560px; }
+
+    /* ── Build cards ── */
+    .bgrid { display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:1px; background:var(--border); }
+    .bcard {
+      background:var(--bg); padding:24px 20px; position:relative; overflow:hidden;
+      transform-style:preserve-3d; transition:background .3s; cursor:default;
+    }
+    .bcard::before {
+      content:''; position:absolute; inset:0;
+      background:linear-gradient(135deg, var(--teal-glow), transparent);
+      opacity:0; transition:opacity .3s;
+    }
+    .bcard:hover { background:rgba(10,10,28,.98); }
+    .bcard:hover::before { opacity:1; }
+    .bico {
+      font-family:var(--mono); font-size:16px;
+      color:rgba(180,160,255,.16); margin-bottom:10px; display:block;
+    }
+    .bcard h3 { font-size:10px; font-weight:600; color:var(--teal); text-transform:uppercase; letter-spacing:1.5px; margin-bottom:8px; }
+    .bcard p  { font-size:12px; color:var(--muted); line-height:1.65; }
+
+    /* ── Projects ── */
+    .plist { display:flex; flex-direction:column; counter-reset:p; }
+    .pitem {
+      counter-increment:p; display:grid; grid-template-columns:32px 1fr;
+      gap:0 28px; padding:30px 0; border-bottom:1px solid var(--border);
+    }
+    .pitem:first-child { border-top:1px solid var(--border); }
+    .pnum {
+      font-family:var(--mono); font-size:11px;
+      color:rgba(180,160,255,.22); padding-top:2px; user-select:none;
+    }
+    .ph { display:flex; align-items:baseline; justify-content:space-between; gap:14px; margin-bottom:10px; flex-wrap:wrap; }
+    .pt { font-size:17px; font-weight:500; color:var(--white); }
+    .pbadge {
+      font-family:var(--mono); font-size:9px; text-transform:uppercase;
+      letter-spacing:1px; padding:3px 10px; border-radius:2px; flex-shrink:0;
+    }
+    .bs  { color:var(--teal);   border:1px solid rgba(180,160,255,.28); }
+    .bw  { color:var(--amber);  border:1px solid rgba(128,128,204,.28); }
+    .bpr { color:var(--violet); border:1px solid rgba(64,64,170,.28); }
+    .pd  { font-size:14px; color:var(--dim); line-height:1.75; margin-bottom:12px; max-width:640px; }
+    .tags { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:12px; }
+    .tag {
+      font-family:var(--mono); font-size:10px; color:var(--muted);
+      border:1px solid rgba(40,40,72,.9); padding:2px 8px; border-radius:2px;
+      transition:border-color .2s, color .2s;
+    }
+    .pitem:hover .tag { border-color:var(--border); color:var(--dim); }
+    .plnks { display:flex; gap:14px; }
+    .plnks a {
+      font-family:var(--mono); font-size:10px; text-transform:uppercase;
+      letter-spacing:1px; color:var(--teal);
+      border-bottom:1px solid rgba(180,160,255,.20); padding-bottom:1px;
+      transition:color .2s, border-color .2s;
+    }
+    .plnks a:hover { color:#e8e8ff; border-bottom-color:#e8e8ff; }
+
+    /* ── Skills ── */
+    .skwrap { display:grid; grid-template-columns:repeat(3,1fr); gap:36px; align-items:start; }
+
+    .skgrp-lbl {
+      font-family:var(--mono); font-size:9px; text-transform:uppercase;
+      letter-spacing:2px; color:var(--muted); margin-bottom:12px;
+      padding-bottom:8px; border-bottom:1px solid rgba(120,100,220,.08);
+    }
+    .sklist { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:4px; }
+    .sk {
+      font-size:13px; color:var(--dim);
+      border: 1px solid var(--border); padding:5px 12px; border-radius:2px;
+      transition:color .2s, border-color .2s, background .2s;
+    }
+    .sk:hover { color:var(--white); border-color:rgba(180,160,255,.35); background:var(--teal-glow); }
+
+
+    /* ── Reveal ── */
+    .rev { opacity:0; transform:translateY(26px); transition:opacity .8s cubic-bezier(.25,1,.5,1), transform .8s cubic-bezier(.25,1,.5,1); }
+    .rev.in { opacity:1; transform:none; }
+    .d1{transition-delay:.08s} .d2{transition-delay:.16s} .d3{transition-delay:.24s} .d4{transition-delay:.32s}
+
+    /* ── Footer ── */
+    .ftr { position:relative; z-index:10; border-top:1px solid var(--border); padding:80px 0 56px; }
+    .ftr-in {
+      max-width:1120px; margin:0 auto; padding:0 40px;
+      display:grid; grid-template-columns:1fr auto; gap:48px; align-items:end;
+    }
+    .ftr h2 { font-size:38px; font-weight:200; color:var(--white); letter-spacing:-.5px; margin-bottom:12px; }
+    .ftr > .ftr-in > .fl > p { font-size:14px; color:var(--muted); margin-bottom:28px; }
+    .femail {
+      font-size:17px; color:var(--teal); display:inline-block;
+      border-bottom:1px solid rgba(180,160,255,.25); padding-bottom:2px;
+      transition:color .2s, border-color .2s, text-shadow .2s;
+    }
+    .femail:hover { color:#e8e8ff; border-bottom-color:#e8e8ff; text-shadow:0 0 20px rgba(180,160,255,.4); }
+    .fr { text-align:right; }
+    .flnks { display:flex; flex-direction:column; gap:8px; align-items:flex-end; margin-bottom:18px; }
+    .flnks a { font-family:var(--mono); font-size:11px; color:var(--muted); letter-spacing:.4px; transition:color .2s; }
+    .flnks a:hover { color:var(--white); }
+    .copy { font-family:var(--mono); font-size:10px; color:var(--muted); letter-spacing:1px; }
+
+    /* ── Responsive ── */
+    @media (prefers-reduced-motion:reduce) {
+      *,*::before,*::after { animation-duration:.01ms!important; transition-duration:.01ms!important; }
+      .tagline { width:100%; animation:none; border-right:none; white-space:normal; }
+    }
+    @media (max-width:900px) {
+      .about-grid { grid-template-columns:1fr; }
+      .skwrap { grid-template-columns:1fr; }
+      .ftr-in { grid-template-columns:1fr; }
+      .fr { text-align:left; }
+      .flnks { align-items:flex-start; }
+      .hero-body { grid-template-columns: 1fr; }
+      .hero-art { display: none; }
+    }
+    @media (max-width:767px) {
+      .page,.hdr-in,.hero { padding-left:20px; padding-right:20px; }
+      nav { display:none; }
+      .tagline { white-space:normal; width:100%; animation:fi .6s ease 1.7s both; border-right:none; }
+      .pitem { grid-template-columns:1fr; }
+      .pnum { display:none; }
+      body { cursor:auto; }
+      #cur-dot,#cur-ring { display:none; }
+    }
+  </style>
 </head>
 <body>
 
-  <!-- HEADER -->
-  <header class="header" role="banner">
-    <div class="nav-container">
-      <a href="#" class="logo" aria-label="Ingkarat Chanyourg — home">Ingkarat</a>
+  <div id="cur-dot"></div>
+  <div id="cur-ring"></div>
+  <canvas id="gc"></canvas>
 
-      <button class="hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false" aria-controls="nav-menu">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
+  <div class="nebula" aria-hidden="true">
+    <div class="nb nb1"></div>
+    <div class="nb nb2"></div>
+    <div class="nb nb3"></div>
+  </div>
 
-      <nav class="nav-links" id="nav-menu" aria-label="Main navigation">
+  <div class="sts" aria-hidden="true">
+    <div class="st"></div><div class="st"></div><div class="st"></div>
+    <div class="st"></div><div class="st"></div><div class="st"></div>
+  </div>
+
+  <header class="hdr" id="hdr">
+    <div class="hdr-in">
+      <a href="#" class="logo">
+        <span class="logo-br">[</span>Ingkarat<span class="logo-br">]</span>
+      </a>
+      <nav>
         <a href="#about">About</a>
-        <a href="#work">Work</a>
+        <a href="#timeline">Log</a>
+        <a href="#build">Build</a>
         <a href="#projects">Projects</a>
         <a href="#skills">Skills</a>
         <a href="#contact">Contact</a>
       </nav>
-
-      <button class="theme-toggle" id="theme-toggle" aria-label="Toggle light/dark mode" title="Toggle theme">
-        <span class="theme-icon-dark">◑</span>
-        <span class="theme-icon-light">◐</span>
-      </button>
     </div>
   </header>
 
-  <main>
+  <!-- HERO -->
+  <section class="hero" aria-label="Introduction">
+    <div class="hero-body">
 
-    <!-- HERO -->
-    <section class="hero" aria-label="Introduction">
-      <div class="hero-content">
-        <h1>Ingkarat Chanyourg</h1>
-        <p class="subtitle">Odoo Developer</p>
-        <p class="tagline">Building business logic, fixing errors, shipping code.</p>
-        <p class="current-role">Currently at Basic-solution</p>
+      <div class="hero-text">
+        <div class="hud">
+          <div class="hud-dot"></div>
+          <span>SYS.<em>ONLINE</em></span>
+          &nbsp;·&nbsp;
+          LAT&nbsp;<em>13.756</em>°N
+          &nbsp;·&nbsp;
+          LON&nbsp;<em>100.501</em>°E
+          &nbsp;·&nbsp;
+          UTC<em>+7</em>
+        </div>
+
+        <div class="name-wrap">
+          <span class="name-ghost" aria-hidden="true">Ingkarat Chanyourg</span>
+          <span class="name-fill">Ingkarat Chanyourg</span>
+        </div>
+
+        <p class="role">Odoo Developer &nbsp;&amp;&nbsp; Game Designer</p>
+
+        <p class="tagline" id="tgl">Building business logic, fixing errors, shipping code.</p>
+
+        <div class="pills">
+          <span class="pill"><span class="pill-key">Status</span>Available</span>
+          <span class="pill"><span class="pill-key">Base</span>Bangkok, TH</span>
+          <span class="pill"><span class="pill-key">At</span>Basic-solution</span>
+          <span class="pill"><span class="pill-key">Open to</span>Remote · Hybrid</span>
+        </div>
+      </div>
+
+      <div class="hero-art">
+        <canvas id="oc"></canvas>
+      </div>
+
+    </div>
+    <div class="hero-foot">
+      <div class="scr-hint"><div class="scr-line"></div>Scroll to navigate</div>
+      <span class="vtag">© 2026</span>
+    </div>
+  </section>
+
+  <main class="page">
+
+    <!-- ABOUT -->
+    <section id="about" class="sec">
+      <div class="sec-lbl" data-n="01">Origin</div>
+      <h2 class="sec-h rev">About <em>Me</em></h2>
+      <div class="about-grid">
+        <div class="atext rev d1">
+          <p>I'm an <strong>Odoo developer</strong> focused on building custom modules, optimizing business processes, and tracking down errors before users find them. Currently at <strong>Basic-solution</strong>, shipping code teams rely on daily.</p>
+          <p>Started in game design — led teams, wrote design documents, shipped prototypes. That background gives me an eye for <strong>user flows, systems thinking, and edge cases</strong> that most backend developers miss.</p>
+          <p>Interested in backend architecture, process automation, and building tools that are genuinely useful — not just technically correct.</p>
+        </div>
+        <div class="rev d2">
+          <div class="dpanel">
+            <div class="drow"><span class="dk">Status</span><span class="dv hi">● Available</span></div>
+            <div class="drow"><span class="dk">Location</span><span class="dv">Bangkok, Thailand</span></div>
+            <div class="drow"><span class="dk">Role</span><span class="dv">Odoo Developer</span></div>
+            <div class="drow"><span class="dk">Company</span><span class="dv">Basic-solution</span></div>
+            <div class="drow"><span class="dk">Education</span><span class="dv">B.S. Creative Media · KMUTT</span></div>
+            <div class="drow"><span class="dk">Graduated</span><span class="dv">2025</span></div>
+            <div class="drow"><span class="dk">Languages</span><span class="dv">Thai (Native) · English (Conv.)</span></div>
+            <div class="drow"><span class="dk">Interests</span><span class="dv">Game design · Linux · Systems</span></div>
+          </div>
+        </div>
       </div>
     </section>
 
-    <!-- ABOUT -->
-    <section id="about" class="about" aria-labelledby="about-heading">
-      <div class="container">
-        <h2 class="reveal" id="about-heading">About Me</h2>
+    <!-- TIMELINE -->
+    <section id="timeline" class="sec">
+      <div class="sec-lbl" data-n="02">Log</div>
+      <h2 class="sec-h rev">Experience <em>&amp; Education</em></h2>
+      <div class="tl rev d1">
 
-        <p class="reveal reveal-delay-1">
-          I'm an Odoo developer focused on building custom modules,
-          optimizing business processes, and tracking down errors before
-          users find them.
-        </p>
+        <div class="tli">
+          <span class="tl-dt">2025 — Present</span>
+          <div class="tl-t">Odoo Developer · Basic-solution</div>
+          <div class="tl-s">Full-time · Bangkok, Thailand</div>
+          <p class="tl-b">Building and maintaining custom Odoo modules — business logic, workflows, PostgreSQL optimization, and production debugging for real clients.</p>
+        </div>
 
-        <p>
-          Also: game designer, problem solver, Linux enthusiast.
-        </p>
+        <div class="tli">
+          <span class="tl-dt">2024</span>
+          <div class="tl-t">Silent Face — Game Designer &amp; Team Manager</div>
+          <div class="tl-s">Academic Project · KMUTT · 4 members · 6 months</div>
+          <p class="tl-b">Led a 4-person team to build a 2D survival horror game. Designed monster AI, level layouts, gun mechanics, item placement, and managed Agile sprints end-to-end.</p>
+        </div>
 
-        <p>
-          Interested in backend development, process automation, and
-          building tools that teams actually use.
-        </p>
+        <div class="tli">
+          <span class="tl-dt">2023</span>
+          <div class="tl-t">My-Ammo — Game Designer &amp; Team Manager</div>
+          <div class="tl-s">Academic Project · KMUTT · 3 members · 4 months</div>
+          <p class="tl-b">Co-op tower defense requiring genuine collaboration. Designed cooperative mechanics, grenade systems, enemy wave logic, and level layouts.</p>
+        </div>
 
-        <p class="metadata">
-          Based in Thailand &bull; Currently at Basic-solution &bull; Available for Remote / Hybrid / Full-time
-        </p>
+        <div class="tli">
+          <span class="tl-dt">2021 — 2025</span>
+          <div class="tl-t">B.S. Creative Media · KMUTT</div>
+          <div class="tl-s">King Mongkut's University of Technology Thonburi</div>
+          <p class="tl-b">Studied game design, digital media, and software development. Built foundational skills in systems thinking, design documentation, and cross-discipline teamwork.</p>
+        </div>
 
-        <details class="about-more">
-          <summary>More about me</summary>
-          <div class="about-more-content">
+        <div class="tli">
+          <span class="tl-dt">2015 — 2021</span>
+          <div class="tl-t">Wat Suthiwararam School</div>
+          <div class="tl-s">Sciences &amp; Math (2015–2018) · English &amp; Math (2018–2021)</div>
+          <p class="tl-b"></p>
+        </div>
 
-            <div class="about-detail-block">
-              <h3>Education</h3>
-              <div class="edu-item">
-                <p class="edu-school">King Mongkut's University of Technology Thonburi</p>
-                <p class="edu-detail">Bachelor's — Creative Media &bull; 2021–2025</p>
-              </div>
-              <div class="edu-item">
-                <p class="edu-school">Wat Suthiwararam School</p>
-                <p class="edu-detail">Sciences &amp; Mathematics Program &bull; 2015–2018</p>
-                <p class="edu-detail">English &amp; Mathematics Program &bull; 2018–2021</p>
-              </div>
-            </div>
-
-            <div class="about-detail-block">
-              <h3>Languages</h3>
-              <p>Thai — Native &bull; English — Conversational</p>
-            </div>
-
-            <div class="about-detail-block">
-              <h3>Background</h3>
-              <p>
-                Started in game design — led teams, wrote design documents,
-                shipped prototypes. Shifted toward backend development
-                and now working in Odoo as a developer while keeping
-                game design as an active side practice.
-              </p>
-            </div>
-
-          </div>
-        </details>
       </div>
     </section>
 
     <!-- WHAT I BUILD -->
-    <section id="work" class="what-i-do" aria-labelledby="work-heading">
-      <div class="container">
-        <h2 class="reveal" id="work-heading">What I Build</h2>
-
-        <div class="services-grid">
-          <div class="service">
-            <h3>Odoo Module Development</h3>
-            <p>Create custom modules that extend Odoo's functionality.
-               Handle business logic, workflows, and integrations.
-               Debug production issues and optimize performance.</p>
-          </div>
-
-          <div class="service">
-            <h3>Business Process Automation</h3>
-            <p>Design workflows that reduce manual work.
-               Implement error handling and data validation.
-               Create reports that decision-makers actually use.</p>
-          </div>
-
-          <div class="service">
-            <h3>UX Enhancement</h3>
-            <p>Build intuitive interfaces for complex operations.
-               Improve data presentation with custom reports.
-               Balance technical requirements with user needs.</p>
-          </div>
-
-          <div class="service">
-            <h3>Error Tracking &amp; Reliability</h3>
-            <p>Monitor logs and track down bugs systematically.
-               Optimize database queries and server performance.
-               Set up monitoring systems and error alerts.</p>
-          </div>
-
-          <div class="service">
-            <h3>Linux Server Management</h3>
-            <p>Deploy Odoo instances on Linux servers.
-               Manage databases and backups.
-               Handle deployments and version control.</p>
-          </div>
-        </div>
+    <section id="build" class="sec">
+      <div class="sec-lbl" data-n="03">Capabilities</div>
+      <h2 class="sec-h rev">What I <em>Build</em></h2>
+      <div class="bgrid rev">
+        <div class="bcard"><span class="bico">{&nbsp;&nbsp;}</span><h3>Odoo Modules</h3><p>Custom modules extending Odoo core. Business logic, workflows, integrations, production debugging.</p></div>
+        <div class="bcard"><span class="bico">⟳</span><h3>Process Automation</h3><p>Workflows that eliminate manual work. Error handling, data validation, actionable reports.</p></div>
+        <div class="bcard"><span class="bico">◈</span><h3>UX Enhancement</h3><p>Complex operations made obvious. Interface design that respects both developer and user.</p></div>
+        <div class="bcard"><span class="bico">⊙</span><h3>Error Tracking</h3><p>Log monitoring, systematic bug hunting, query optimization, alert infrastructure.</p></div>
+        <div class="bcard"><span class="bico">$_</span><h3>Linux Server</h3><p>Odoo deployment on Linux. Database management, backups, version control workflows.</p></div>
+        <div class="bcard"><span class="bico">◧</span><h3>Game Systems</h3><p>Mechanics design, DDA, AI behaviour, team management, design documentation (GDD).</p></div>
       </div>
     </section>
 
     <!-- PROJECTS -->
-    <section id="projects" class="projects" aria-labelledby="projects-heading">
-      <div class="container">
-        <h2 class="reveal" id="projects-heading">Selected Projects</h2>
+    <section id="projects" class="sec">
+      <div class="sec-lbl" data-n="04">Missions</div>
+      <h2 class="sec-h rev">Selected <em>Projects</em></h2>
+      <div class="plist">
 
-        <div class="projects-list">
-          <article class="project reveal reveal-delay-1">
-            <h3>Silent Face — 2D Survival Horror</h3>
-            <p class="description">
-              A 2D survival horror game built around atmospheric tension and player choice.
-              Every challenge has multiple solutions. The enemy retreats and returns — never
-              truly gone. Responsible for game design, monster AI behaviour, level layouts,
-              gun mechanics, item placement, and team management using Agile sprints.
-            </p>
-            <p class="tech">C# &bull; Unity &bull; Game Design &bull; Agile</p>
-            <p class="project-meta">Game Designer &amp; Team Manager &bull; 4 members &bull; 6 months</p>
-            <div class="project-links">
-              <a href="https://github.com/Kung16845/GDM320" target="_blank" rel="noopener noreferrer">GitHub</a>
-              <a href="https://docs.google.com/document/d/1-Cuy__8W7dQQkiqvPMAarWeZY5m_shfU/edit" target="_blank" rel="noopener noreferrer">GDD</a>
+        <div class="pitem rev d1">
+          <div class="pnum">01</div>
+          <div>
+            <div class="ph">
+              <h3 class="pt">Silent Face — 2D Survival Horror</h3>
+              <span class="pbadge bs">Shipped</span>
             </div>
-          </article>
-
-          <article class="project reveal reveal-delay-2">
-            <h3>My-Ammo — 2D Co-op Tower Defense</h3>
-            <p class="description">
-              A co-op tower defense where two players must collaborate under pressure.
-              Designed mechanics that force real cooperation: one player opens a crate,
-              the other carries the item. Built grenade mechanics, enemy wave logic,
-              and level layouts. Led a 3-person team through 4 months of development.
-            </p>
-            <p class="tech">C# &bull; Unity &bull; Netcode &bull; Game Design</p>
-            <p class="project-meta">Game Designer &amp; Team Manager &bull; 3 members &bull; 4 months</p>
-            <div class="project-links">
-              <a href="https://github.com/Kung16845/My-Ammo-Project" target="_blank" rel="noopener noreferrer">GitHub</a>
+            <p class="pd">A survival horror game built around atmospheric tension and multi-solution challenges. The enemy retreats and returns — never truly gone. Responsible for game design, monster AI behaviour, level layouts, gun mechanics, item placement, and leading a 4-person team through Agile sprints over 6 months.</p>
+            <div class="tags">
+              <span class="tag">C#</span><span class="tag">Unity</span>
+              <span class="tag">Game Design</span><span class="tag">Agile</span>
+              <span class="tag">4 members</span><span class="tag">6 months</span>
             </div>
-          </article>
-
-          <article class="project reveal reveal-delay-3">
-            <h3>Green Night — 2D Tower Defense Survival</h3>
-            <p class="description">
-              Resource management survival game where players scavenge, craft, and trade
-              to stay alive. Designed Dynamic Difficulty Adjustment (DDA) responding to
-              player actions, a crafting system with item rarity and trade values,
-              NPC class diagrams, and a Main Spawner with lane-based enemy logic.
-            </p>
-            <p class="tech">C# &bull; Unity &bull; Game Design &bull; Systems Design</p>
-            <p class="project-meta">Game Designer, Team Manager &amp; Developer &bull; 3 members &bull; WIP</p>
-            <div class="project-links">
-              <a href="https://github.com/Kung16845/Green-Night" target="_blank" rel="noopener noreferrer">GitHub</a>
-              <a href="https://miro.com/welcomeonboard/UWtscUhvUjB3WDd5QmFxQmNRYXdRa3Excm1ZaHZZR2poaEJZcXlOV0h5bEw3Q3RhQVdjUWU1YVJTT3hGS2IzZ3wzNDU4NzY0NTI1NjEzOTE3OTk2fDI=?share_link_id=486408320412" target="_blank" rel="noopener noreferrer">Miro Board</a>
+            <div class="plnks">
+              <a href="https://github.com/Kung16845/GDM320" target="_blank" rel="noopener noreferrer">GitHub →</a>
+              <a href="https://docs.google.com/document/d/1-Cuy__8W7dQQkiqvPMAarWeZY5m_shfU/edit" target="_blank" rel="noopener noreferrer">GDD →</a>
             </div>
-          </article>
+          </div>
         </div>
+
+        <div class="pitem rev d2">
+          <div class="pnum">02</div>
+          <div>
+            <div class="ph">
+              <h3 class="pt">My-Ammo — 2D Co-op Tower Defense</h3>
+              <span class="pbadge bs">Shipped</span>
+            </div>
+            <p class="pd">Co-op tower defense where two players must genuinely collaborate under pressure. One opens a crate, the other carries the item. Built grenade mechanics, enemy wave logic, level layouts, and online netcode for real-time co-op across a 3-person team.</p>
+            <div class="tags">
+              <span class="tag">C#</span><span class="tag">Unity</span>
+              <span class="tag">Netcode</span><span class="tag">Game Design</span>
+              <span class="tag">3 members</span><span class="tag">4 months</span>
+            </div>
+            <div class="plnks">
+              <a href="https://github.com/Kung16845/My-Ammo-Project" target="_blank" rel="noopener noreferrer">GitHub →</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="pitem rev d3">
+          <div class="pnum">03</div>
+          <div>
+            <div class="ph">
+              <h3 class="pt">Green Night — Tower Defense Survival</h3>
+              <span class="pbadge bw">In Progress</span>
+            </div>
+            <p class="pd">Resource management survival. Players scavenge, craft, and trade to stay alive. Designed Dynamic Difficulty Adjustment (DDA) responding to player behaviour, a crafting system with item rarity and trade values, NPC class diagrams, and a Main Spawner with lane-based enemy logic.</p>
+            <div class="tags">
+              <span class="tag">C#</span><span class="tag">Unity</span>
+              <span class="tag">Systems Design</span><span class="tag">DDA</span>
+              <span class="tag">3 members</span>
+            </div>
+            <div class="plnks">
+              <a href="https://github.com/Kung16845/Green-Night" target="_blank" rel="noopener noreferrer">GitHub →</a>
+              <a href="https://miro.com/welcomeonboard/UWtscUhvUjB3WDd5QmFxQmNRYXdRa3Excm1ZaHZZR2poaEJZcXlOV0h5bEw3Q3RhQVdjUWU1YVJTT3hGS2IzZ3wzNDU4NzY0NTI1NjEzOTE3OTk2fDI=?share_link_id=486408320412" target="_blank" rel="noopener noreferrer">Miro →</a>
+            </div>
+          </div>
+        </div>
+
       </div>
     </section>
 
     <!-- SKILLS -->
-    <section id="skills" class="skills" aria-labelledby="skills-heading">
-      <div class="container">
-        <h2 class="reveal" id="skills-heading">Skills &amp; Tools</h2>
+    <section id="skills" class="sec">
+      <div class="sec-lbl" data-n="05">Arsenal</div>
+      <h2 class="sec-h rev">Skills <em>&amp; Tools</em></h2>
+      <div class="skwrap">
 
-        <div class="skills-grid">
-          <div class="skill-category">
-            <h3>Game Design</h3>
-            <p>Designing game mechanics, systems, and level layouts from concept to
-               playable prototype. Experienced in balancing gameplay loops, writing
-               design documents (GDD), and playtesting for feel and fairness.</p>
-          </div>
-
-          <div class="skill-category">
-            <h3>Project &amp; Team Management</h3>
-            <p>Led teams of 3–4 using Agile sprints — daily standups, task tracking,
-               and milestone planning. Bridging the gap between designers, artists,
-               and developers to keep projects moving without bottlenecks.</p>
-          </div>
-
-          <div class="skill-category">
-            <h3>Game Development</h3>
-            <p>Hands-on development in Unity with C#. Implemented spawner systems,
-               crafting mechanics, Dynamic Difficulty Adjustment (DDA), AI behaviour,
-               and online netcode for co-op gameplay.</p>
-          </div>
-
-          <div class="skill-category">
-            <h3>Backend Development</h3>
-            <p>Python &bull; Odoo Framework &bull; PostgreSQL &bull; SQL &bull; Qweb &bull; XML &bull; JavaScript.
-               Building custom Odoo modules, business logic, workflows, and data reports.</p>
-          </div>
-
-          <div class="skill-category">
-            <h3>Programming</h3>
-            <p>C# (primary) &bull; Python &bull; JavaScript &bull; CSS &bull; HTML.
-               Comfortable scripting game logic, UI systems, and lightweight web pages
-               from scratch without frameworks.</p>
-          </div>
-
-          <div class="skill-category">
-            <h3>Tools &amp; Platforms</h3>
-            <p>Linux (Ubuntu) &bull; Git &bull; Docker (basics) &bull; VS Code &bull;
-               Postman &bull; Unity &bull; Miro &bull; Google Docs.</p>
+        <div class="skgrp rev d1">
+          <div class="skgrp-lbl">Backend / Odoo</div>
+          <div class="sklist">
+            <span class="sk">Python</span>
+            <span class="sk">Odoo Framework</span>
+            <span class="sk">PostgreSQL</span>
+            <span class="sk">JavaScript</span>
+            <span class="sk">XML / QWeb</span>
+            <span class="sk">SQL</span>
           </div>
         </div>
+
+        <div class="skgrp rev d2">
+          <div class="skgrp-lbl">Game Development</div>
+          <div class="sklist">
+            <span class="sk">C#</span>
+            <span class="sk">Unity</span>
+            <span class="sk">Game Design</span>
+            <span class="sk">Systems Design</span>
+            <span class="sk">Netcode</span>
+            <span class="sk">Agile / Scrum</span>
+          </div>
+        </div>
+
+        <div class="skgrp rev d3">
+          <div class="skgrp-lbl">Tools &amp; Platforms</div>
+          <div class="sklist">
+            <span class="sk">Linux (Ubuntu)</span>
+            <span class="sk">Git</span>
+            <span class="sk">Docker</span>
+            <span class="sk">VS Code</span>
+            <span class="sk">Postman</span>
+            <span class="sk">Miro</span>
+          </div>
+        </div>
+
       </div>
     </section>
 
   </main>
 
-  <!-- FOOTER / CONTACT -->
-  <footer id="contact" class="footer" role="contentinfo">
-    <div class="container">
-      <h2>Let's Work Together</h2>
-
-      <p>
-        Get in touch about game design, development roles,
-        or interesting projects to collaborate on.
-      </p>
-
-      <div class="contact-info">
-        <a href="mailto:fanta_2545@hotmail.com">fanta_2545@hotmail.com</a>
+  <footer id="contact" class="ftr">
+    <div class="ftr-in">
+      <div class="fl rev">
+        <h2>Open Transmission</h2>
+        <p>Available for Odoo development, backend roles, or interesting systems to build.</p>
+        <a class="femail" href="mailto:fanta_2545@hotmail.com">fanta_2545@hotmail.com</a>
       </div>
-
-      <div class="social-links">
-        <a href="https://github.com/AgentAtnaf" target="_blank" rel="noopener noreferrer">GitHub</a>
+      <div class="fr rev d1">
+        <div class="flnks">
+          <a href="https://github.com/AgentAtnaf" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+        </div>
+        <p class="copy">© 2026 Ingkarat Chanyourg</p>
       </div>
-
-      <p class="copyright">&copy; 2026 Ingkarat Chanyourg</p>
     </div>
   </footer>
 
   <script>
-    // Theme toggle
-    const themeToggle = document.getElementById('theme-toggle');
-    const saved = localStorage.getItem('theme') || 'dark';
-    document.documentElement.setAttribute('data-theme', saved);
-
-    themeToggle.addEventListener('click', () => {
-      const current = document.documentElement.getAttribute('data-theme');
-      const next    = current === 'dark' ? 'light' : 'dark';
-      document.documentElement.setAttribute('data-theme', next);
-      localStorage.setItem('theme', next);
+    /* Custom cursor */
+    const dot  = document.getElementById('cur-dot');
+    const ring = document.getElementById('cur-ring');
+    let mx = -200, my = -200, rx = -200, ry = -200;
+    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+    (function animCursor() {
+      dot.style.left  = mx + 'px'; dot.style.top   = my + 'px';
+      rx += (mx - rx) * 0.11; ry += (my - ry) * 0.11;
+      ring.style.left = rx + 'px'; ring.style.top  = ry + 'px';
+      requestAnimationFrame(animCursor);
+    })();
+    document.querySelectorAll('a, button, .bcard, .pitem').forEach(el => {
+      el.addEventListener('mouseenter', () => ring.classList.add('big'));
+      el.addEventListener('mouseleave', () => ring.classList.remove('big'));
     });
 
-    // Hamburger toggle
-    const hamburger = document.getElementById('hamburger');
-    const navMenu   = document.getElementById('nav-menu');
+    /* Canvas — warp speed → indigo starfield */
+    const cv  = document.getElementById('gc');
+    const ctx = cv.getContext('2d');
+    function resize() { cv.width = window.innerWidth; cv.height = window.innerHeight; }
+    resize();
+    window.addEventListener('resize', resize, { passive: true });
+    const W = () => cv.width, H = () => cv.height;
 
-    hamburger.addEventListener('click', () => {
-      const open = hamburger.getAttribute('aria-expanded') === 'true';
-      hamburger.setAttribute('aria-expanded', String(!open));
-      navMenu.classList.toggle('open');
-    });
+    const stars = Array.from({ length: 320 }, () => ({
+      angle: Math.random() * Math.PI * 2,
+      speed: 1.5 + Math.random() * 4,
+      r:     0.4 + Math.random() * 1.2,
+      alpha: 0.35 + Math.random() * 0.55,
+      nx:    Math.random(),
+      ny:    Math.random() * 3200,
+      ps:    [0.04, 0.13, 0.27][Math.floor(Math.random() * 3)],
+      phase: Math.random() * Math.PI * 2,
+      freq:  0.009 + Math.random() * 0.018,
+    }));
 
-    navMenu.querySelectorAll('a').forEach(link => {
-      link.addEventListener('click', () => {
-        hamburger.setAttribute('aria-expanded', 'false');
-        navMenu.classList.remove('open');
-      });
-    });
+    const WARP_MS = 1800, FADE_MS = 700, t0 = performance.now();
+    let scrollY = 0, frame = 0;
+    window.addEventListener('scroll', () => { scrollY = window.scrollY; }, { passive: true });
 
-    // Header scroll shadow
-    const header = document.querySelector('.header');
+    function draw(now) {
+      const el = now - t0;
+      const wt = Math.min(el / WARP_MS, 1);
+      const ft = Math.max(0, Math.min((el - WARP_MS) / FADE_MS, 1));
+      ctx.clearRect(0, 0, W(), H());
+      frame++;
+
+      if (ft < 1) {
+        ctx.save(); ctx.globalAlpha = (1 - ft) * 0.9;
+        for (const s of stars) {
+          const maxR = Math.hypot(W(), H()) * 0.6;
+          const dist = (s.speed / 5.5) * maxR * (wt * wt);
+          const streak = dist * 0.18 * wt;
+          const x1 = W()/2 + Math.cos(s.angle) * Math.max(1, dist - streak);
+          const y1 = H()/2 + Math.sin(s.angle) * Math.max(1, dist - streak);
+          const x2 = W()/2 + Math.cos(s.angle) * dist;
+          const y2 = H()/2 + Math.sin(s.angle) * dist;
+          if (x2 < -10 || x2 > W()+10 || y2 < -10 || y2 > H()+10) continue;
+          const g = ctx.createLinearGradient(x1, y1, x2, y2);
+          g.addColorStop(0, 'transparent');
+          g.addColorStop(1, `rgba(200,195,255,${s.alpha * Math.min(wt * 2, 1)})`);
+          ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2);
+          ctx.strokeStyle = g; ctx.lineWidth = s.r * 0.8; ctx.stroke();
+        }
+        ctx.restore();
+      }
+
+      if (ft > 0) {
+        ctx.save(); ctx.globalAlpha = ft;
+        for (const s of stars) {
+          const sx  = s.nx * W();
+          const raw = s.ny - scrollY * s.ps;
+          const span = H() + 20;
+          const sy  = ((raw % span) + span) % span - 10;
+          const tw  = s.alpha * (0.6 + 0.4 * Math.sin(frame * s.freq + s.phase));
+          ctx.beginPath(); ctx.arc(sx, sy, s.r, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(210,205,255,${tw})`; ctx.fill();
+          if (s.r > 1.1) {
+            const g = ctx.createRadialGradient(sx, sy, 0, sx, sy, s.r * 4);
+            g.addColorStop(0, `rgba(140,120,255,${tw * 0.18})`);
+            g.addColorStop(1, 'transparent');
+            ctx.beginPath(); ctx.arc(sx, sy, s.r * 4, 0, Math.PI * 2);
+            ctx.fillStyle = g; ctx.fill();
+          }
+        }
+        ctx.restore();
+      }
+      requestAnimationFrame(draw);
+    }
+    requestAnimationFrame(draw);
+
+    /* Header */
+    const hdr = document.getElementById('hdr');
     window.addEventListener('scroll', () => {
-      header.classList.toggle('scrolled', window.scrollY > 10);
+      hdr.classList.toggle('solid', window.scrollY > 20);
     }, { passive: true });
 
-    // Scroll reveal
-    const revealEls = document.querySelectorAll('.reveal');
-    const observer  = new IntersectionObserver((entries) => {
-      entries.forEach(el => {
-        if (el.isIntersecting) {
-          el.target.classList.add('visible');
-          observer.unobserve(el.target);
-        }
+    /* 3D tilt */
+    for (const card of document.querySelectorAll('.bcard')) {
+      card.addEventListener('mousemove', e => {
+        const r  = card.getBoundingClientRect();
+        const dx = (e.clientX - r.left - r.width / 2) / (r.width / 2);
+        const dy = (e.clientY - r.top  - r.height/ 2) / (r.height/ 2);
+        card.style.transform = `perspective(380px) rotateY(${dx*10}deg) rotateX(${-dy*10}deg) translateZ(3px)`;
       });
-    }, { threshold: 0.12 });
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = '';
+        card.style.transition = 'transform .45s ease, background .3s';
+      });
+    }
 
-    revealEls.forEach(el => observer.observe(el));
+    /* Scroll reveal */
+    const revIO = new IntersectionObserver(entries => {
+      for (const e of entries) {
+        if (e.isIntersecting) { e.target.classList.add('in'); revIO.unobserve(e.target); }
+      }
+    }, { threshold: 0.08 });
+    document.querySelectorAll('.rev').forEach(el => revIO.observe(el));
+
+    /* Typewriter */
+    const tgl = document.getElementById('tgl');
+    tgl.addEventListener('animationend', e => {
+      if (e.animationName === 'tw') {
+        tgl.style.width = '100%';
+        setTimeout(() => { tgl.style.borderRight = 'none'; }, 5000);
+      }
+    });
+
+    /* ─────────────────────────────────
+       Skills — zodiac constellation style
+       Each star = one skill, dotted lines connect them
+    ───────────────────────────────── */
+    (function () {
+      const sc = document.getElementById('sc');
+      if (!sc) return;
+      const CW = 1000, CH = 750;
+      sc.width = CW; sc.height = CH;
+      const cx = sc.getContext('2d');
+
+      /* Constellation: rx/ry in unit space, r in px */
+      const STARS = [
+        { rx:  0.00, ry:  0.00, r: 22, label: 'Python'  }, // 0 anchor
+        { rx: -0.55, ry: -0.52, r: 14, label: 'Odoo'    }, // 1
+        { rx: -0.78, ry: -1.25, r: 10, label: 'SQL'     }, // 2
+        { rx: -0.28, ry: -1.90, r: 11, label: 'Linux'   }, // 3
+        { rx:  0.48, ry: -1.88, r: 10, label: 'Git'     }, // 4
+        { rx:  0.98, ry: -1.22, r: 12, label: 'C#'      }, // 5
+        { rx:  0.72, ry: -0.45, r:  9, label: 'Unity'   }, // 6
+        { rx:  1.12, ry:  0.28, r: 14, label: 'JS'      }, // 7
+        { rx:  0.22, ry:  1.25, r: 12, label: 'Design'  }, // 8
+      ];
+
+      const EDGES = [
+        [0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,0],
+        [0,7],[7,6],[0,8],[8,3],[5,7],
+      ];
+
+      const SC   = 148;                    // unit → pixel scale
+      const CCX  = CW * 0.47, CCY = CH * 0.52; // constellation center
+
+      /* Background stars */
+      const BG = Array.from({ length: 110 }, () => ({
+        x: Math.random() * CW, y: Math.random() * CH,
+        r:  0.5 + Math.random() * 1.6,
+        op: 0.10 + Math.random() * 0.28,
+        ph: Math.random() * Math.PI * 2,
+        sp: 0.0004 + Math.random() * 0.0009,
+      }));
+
+      function spike(x, y, angle, len, col) {
+        for (const dir of [1, -1]) {
+          const g = cx.createLinearGradient(x, y,
+            x + Math.cos(angle) * len * dir,
+            y + Math.sin(angle) * len * dir);
+          g.addColorStop(0, col); g.addColorStop(1, 'rgba(180,160,255,0)');
+          cx.beginPath(); cx.moveTo(x, y);
+          cx.lineTo(x + Math.cos(angle)*len*dir, y + Math.sin(angle)*len*dir);
+          cx.strokeStyle = g; cx.lineWidth = 1.2; cx.stroke();
+        }
+      }
+
+      function animSkills(now) {
+        /* Sky */
+        const bg = cx.createLinearGradient(0, 0, 0, CH);
+        bg.addColorStop(0, '#05050f'); bg.addColorStop(1, '#08082a');
+        cx.fillStyle = bg; cx.fillRect(0, 0, CW, CH);
+
+        /* Background stars */
+        for (const s of BG) {
+          const op = s.op + Math.sin(now * s.sp + s.ph) * 0.09;
+          cx.beginPath(); cx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+          cx.fillStyle = `rgba(195,185,255,${Math.max(0, op)})`; cx.fill();
+        }
+
+        /* Pixel positions */
+        const pts = STARS.map(s => ({
+          x: CCX + s.rx * SC, y: CCY + s.ry * SC, r: s.r, label: s.label,
+        }));
+
+        /* Dotted edges */
+        cx.save();
+        cx.setLineDash([6, 9]); cx.lineWidth = 1.2;
+        cx.strokeStyle = 'rgba(175,160,255,0.40)';
+        for (const [i, j] of EDGES) {
+          cx.beginPath();
+          cx.moveTo(pts[i].x, pts[i].y);
+          cx.lineTo(pts[j].x, pts[j].y);
+          cx.stroke();
+        }
+        cx.restore();
+
+        /* Stars */
+        for (let i = 0; i < pts.length; i++) {
+          const { x, y, r, label } = pts[i];
+          const pulse = 1 + Math.sin(now * 0.0009 + i * 0.72) * 0.10;
+          const rr = r * pulse;
+
+          /* halo */
+          if (r >= 11) {
+            cx.save();
+            cx.shadowBlur = 30; cx.shadowColor = 'rgba(170,150,255,0.75)';
+            cx.beginPath(); cx.arc(x, y, rr * 1.9, 0, Math.PI * 2);
+            cx.fillStyle = 'rgba(190,175,255,0.05)'; cx.fill();
+            cx.restore();
+          }
+
+          /* diffraction spikes for bright stars */
+          if (r >= 13) {
+            const sl = r * 4.2;
+            spike(x, y, 0,             sl, 'rgba(215,205,255,0.52)');
+            spike(x, y, Math.PI * 0.5, sl, 'rgba(215,205,255,0.52)');
+            spike(x, y, Math.PI * 0.25, sl * 0.5, 'rgba(215,205,255,0.26)');
+            spike(x, y, Math.PI * 0.75, sl * 0.5, 'rgba(215,205,255,0.26)');
+          }
+
+          /* core */
+          const grd = cx.createRadialGradient(x, y, 0, x, y, rr * 1.3);
+          grd.addColorStop(0, '#ffffff');
+          grd.addColorStop(0.38, 'rgba(218,208,255,0.95)');
+          grd.addColorStop(1,    'rgba(140,120,255,0)');
+          cx.beginPath(); cx.arc(x, y, rr * 1.3, 0, Math.PI * 2);
+          cx.fillStyle = grd; cx.fill();
+
+          /* label outward from center */
+          const dx = x - CCX, dy = y - CCY;
+          const dist = Math.hypot(dx, dy) || 1;
+          const nx = dx / dist, ny = dy / dist;
+          const lx = x + nx * (rr * 1.5 + 14);
+          const ly = y + ny * (rr * 1.5 + 14);
+          cx.font = `${r >= 18 ? 'bold ' : ''}${r >= 18 ? 26 : 21}px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif`;
+          cx.textAlign    = nx >  0.2 ? 'left'   : nx < -0.2 ? 'right'  : 'center';
+          cx.textBaseline = ny >  0.3 ? 'top'    : ny < -0.3 ? 'bottom' : 'middle';
+          cx.fillStyle = r >= 18 ? 'rgba(218,210,255,0.95)' : 'rgba(182,170,255,0.82)';
+          cx.fillText(label, lx, ly);
+        }
+
+        /* Constellation name */
+        cx.textAlign = 'center'; cx.textBaseline = 'alphabetic';
+        cx.font = 'italic 17px Georgia,serif';
+        cx.fillStyle = 'rgba(110,90,200,0.38)';
+        cx.fillText('Serpentis Codex', CW / 2, CH - 20);
+
+        requestAnimationFrame(animSkills);
+      }
+      requestAnimationFrame(animSkills);
+    })();
+
+    /* ─────────────────────────────────
+       Orbit Art — skill planets on labeled ellipses
+    ───────────────────────────────── */
+    const oc = document.getElementById('oc');
+    const SZ = 380;
+    oc.width = SZ * 2; oc.height = SZ * 2;
+    oc.style.width = SZ + 'px'; oc.style.height = SZ + 'px';
+    const octx = oc.getContext('2d');
+    octx.scale(2, 2);
+    const OCX = SZ / 2, OCY = SZ / 2;
+
+    /* Skills assigned to each orbit */
+    const ORBIT_SKILLS = [
+      { rx: 72,  ry: 28, tilt: 0.32, speed: 0.58,
+        planets: [
+          { label: 'Odoo',  phase: 2.8, r: 4.5 },
+          { label: 'Linux', phase: 5.6, r: 3.8 },
+        ]
+      },
+      { rx: 118, ry: 46, tilt: 0.20, speed: 0.36,
+        planets: [
+          { label: 'JS',  phase: 1.5, r: 4.5 },
+          { label: 'C#',  phase: 3.8, r: 4.5 },
+          { label: 'SQL', phase: 5.5, r: 3.8 },
+        ]
+      },
+      { rx: 162, ry: 64, tilt: 0.09, speed: 0.21,
+        planets: [
+          { label: 'Design', phase: 0.6, r: 3.8 },
+          { label: 'Git',    phase: 3.0, r: 3.8 },
+          { label: 'Unity',  phase: 5.2, r: 4.2 },
+        ]
+      },
+    ];
+
+    function getPlanetPos(orb, planet, t) {
+      const a = planet.phase + t * orb.speed;
+      const cosT = Math.cos(orb.tilt), sinT = Math.sin(orb.tilt);
+      const ex = Math.cos(a) * orb.rx, ey = Math.sin(a) * orb.ry;
+      return { x: OCX + ex * cosT - ey * sinT, y: OCY + ex * sinT + ey * cosT };
+    }
+
+    function drawOrbitRing(orb, alpha) {
+      const cosT = Math.cos(orb.tilt), sinT = Math.sin(orb.tilt);
+      octx.beginPath();
+      for (let i = 0; i <= 120; i++) {
+        const a = (i / 120) * Math.PI * 2;
+        const ex = Math.cos(a) * orb.rx, ey = Math.sin(a) * orb.ry;
+        const x = OCX + ex * cosT - ey * sinT;
+        const y = OCY + ex * sinT + ey * cosT;
+        i === 0 ? octx.moveTo(x, y) : octx.lineTo(x, y);
+      }
+      octx.closePath();
+      octx.strokeStyle = `rgba(160,140,255,${alpha})`;
+      octx.lineWidth = 0.6;
+      octx.stroke();
+    }
+
+    function animOrbit(now) {
+      const t = now * 0.000075;
+      octx.clearRect(0, 0, SZ, SZ);
+
+      /* Orbit rings */
+      ORBIT_SKILLS.forEach((orb, i) => drawOrbitRing(orb, 0.13 + i * 0.04));
+
+      /* Skill planets */
+      for (const orb of ORBIT_SKILLS) {
+        for (const planet of orb.planets) {
+          const { x, y } = getPlanetPos(orb, planet, t);
+
+          /* glow */
+          const glow = octx.createRadialGradient(x, y, 0, x, y, planet.r * 5);
+          glow.addColorStop(0, 'rgba(200,185,255,0.28)');
+          glow.addColorStop(0.5, 'rgba(160,140,255,0.10)');
+          glow.addColorStop(1, 'transparent');
+          octx.beginPath();
+          octx.arc(x, y, planet.r * 5, 0, Math.PI * 2);
+          octx.fillStyle = glow; octx.fill();
+
+          /* core */
+          const core = octx.createRadialGradient(x, y, 0, x, y, planet.r);
+          core.addColorStop(0, 'rgba(255,255,255,0.98)');
+          core.addColorStop(0.5, 'rgba(220,210,255,0.92)');
+          core.addColorStop(1, 'rgba(180,160,255,0.5)');
+          octx.beginPath();
+          octx.arc(x, y, planet.r, 0, Math.PI * 2);
+          octx.fillStyle = core; octx.fill();
+
+          /* label offset outward from center */
+          const dx = x - OCX, dy = y - OCY;
+          const len = Math.hypot(dx, dy) || 1;
+          const nx = dx / len, ny = dy / len;
+          const lx = x + nx * (planet.r + 9);
+          const ly = y + ny * (planet.r + 9);
+          octx.font = '9px "SF Mono","Fira Code",monospace';
+          octx.fillStyle = 'rgba(200,188,255,0.88)';
+          octx.textAlign    = nx >  0.25 ? 'left'   : nx < -0.25 ? 'right'  : 'center';
+          octx.textBaseline = ny >  0.35 ? 'top'    : ny < -0.35 ? 'bottom' : 'middle';
+          octx.fillText(planet.label, lx, ly);
+        }
+      }
+
+      /* Central Python star */
+      const pulse = 0.78 + 0.22 * Math.sin(now * 0.0018);
+
+      const cbloom = octx.createRadialGradient(OCX, OCY, 0, OCX, OCY, 34);
+      cbloom.addColorStop(0, `rgba(220,205,255,${0.60 * pulse})`);
+      cbloom.addColorStop(0.4, `rgba(160,130,255,${0.22 * pulse})`);
+      cbloom.addColorStop(1, 'transparent');
+      octx.beginPath(); octx.arc(OCX, OCY, 34, 0, Math.PI * 2);
+      octx.fillStyle = cbloom; octx.fill();
+
+      octx.beginPath(); octx.arc(OCX, OCY, 18, 0, Math.PI * 2);
+      octx.strokeStyle = `rgba(180,160,255,${0.30 * pulse})`;
+      octx.lineWidth = 0.8; octx.stroke();
+
+      const ccore = octx.createRadialGradient(OCX, OCY, 0, OCX, OCY, 10);
+      ccore.addColorStop(0, `rgba(255,255,255,${pulse})`);
+      ccore.addColorStop(0.45, `rgba(225,210,255,${0.88 * pulse})`);
+      ccore.addColorStop(1, 'transparent');
+      octx.beginPath(); octx.arc(OCX, OCY, 10, 0, Math.PI * 2);
+      octx.fillStyle = ccore; octx.fill();
+
+      octx.font = '10px "SF Mono","Fira Code",monospace';
+      octx.fillStyle = 'rgba(210,198,255,0.82)';
+      octx.textAlign = 'center'; octx.textBaseline = 'top';
+      octx.fillText('Python', OCX, OCY + 13);
+
+      requestAnimationFrame(animOrbit);
+    }
+    requestAnimationFrame(animOrbit);
   </script>
 
 </body>
