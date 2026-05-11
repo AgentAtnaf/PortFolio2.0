@@ -18,8 +18,8 @@
       --surface:   rgba(10, 10, 30, 0.82);
       --border:    rgba(120, 100, 220, 0.13);
       --white:     #e8e8ff;
-      --dim:       #6060a0;
-      --muted:     #282848;
+      --dim:       #9090c0;
+      --muted:     #5a587c;
       --teal:      #c8c8ff;
       --amber:     #8080cc;
       --violet:    #4040aa;
@@ -191,7 +191,7 @@
     }
     .hero-body {
       max-width: 1120px; margin: 0 auto; width: 100%;
-      display: grid; grid-template-columns: 1fr 380px; gap: 48px;
+      display: grid; grid-template-columns: 1fr 480px; gap: 48px;
       align-items: center; padding: 72px 0 40px;
     }
     .hero-text { display: flex; flex-direction: column; }
@@ -206,7 +206,7 @@
       font-family: var(--mono); font-size: 10px;
       color: var(--muted); letter-spacing: 1.8px;
       margin-bottom: 36px;
-      display: flex; align-items: center; gap: 18px; flex-wrap: wrap;
+      display: flex; align-items: center; gap: 18px; flex-wrap: nowrap;
       opacity: 0; animation: fi .5s ease .4s forwards;
     }
     .hud em { color: var(--teal); font-style: normal; }
@@ -219,13 +219,13 @@
 
     /* Big name */
     .name-wrap {
-      position: relative; margin-bottom: 20px;
+      position: relative; margin-bottom: 20px; padding-bottom: 18px;
       opacity: 0; animation: fi .8s ease .75s forwards;
     }
     .name-fill {
       display: block;
       font-size: clamp(48px, 8vw, 100px);
-      font-weight: 200; letter-spacing: -2.5px; line-height: 1.08;
+      font-weight: 200; letter-spacing: -2.5px; line-height: 1.12;
       --g1: #f0f0ff; --g2: #c0c0ff; --g3: #8080cc;
       background: linear-gradient(138deg, var(--g1) 0%, var(--g2) 44%, var(--g3) 82%);
       -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
@@ -234,7 +234,7 @@
     .name-ghost {
       display: block; position: absolute; inset: 0;
       font-size: clamp(48px, 8vw, 100px);
-      font-weight: 200; letter-spacing: -2.5px; line-height: 1.08;
+      font-weight: 200; letter-spacing: -2.5px; line-height: 1.12;
       -webkit-text-stroke: 1px rgba(180,160,255,0.06);
       color: transparent; pointer-events: none; user-select: none;
       z-index: -1;
@@ -289,7 +289,7 @@
     }
     .scr-hint {
       font-family: var(--mono); font-size: 9px;
-      text-transform: uppercase; letter-spacing: 3px; color: var(--muted);
+      text-transform: uppercase; letter-spacing: 3px; color: rgba(160,150,220,0.55);
       display: flex; align-items: center; gap: 12px;
     }
     .scr-line {
@@ -298,7 +298,7 @@
       animation: sp 2s ease-in-out infinite;
     }
     @keyframes sp { 0%,100%{transform:scaleX(1);opacity:.4} 50%{transform:scaleX(.5);opacity:1} }
-    .vtag { font-family:var(--mono); font-size:9px; color:var(--muted); letter-spacing:1px; }
+    .vtag { font-family:var(--mono); font-size:9px; color:rgba(160,150,220,0.50); letter-spacing:1px; }
 
     @keyframes fi { to { opacity: 1; } }
 
@@ -309,10 +309,10 @@
     .sec { padding: 80px 0; border-top: 1px solid var(--border); }
     .sec-lbl {
       font-family: var(--mono); font-size: 9px;
-      text-transform: uppercase; letter-spacing: 3px; color: var(--muted);
+      text-transform: uppercase; letter-spacing: 3px; color: rgba(150,138,210,0.60);
       margin-bottom: 8px; display: flex; align-items: center; gap: 10px;
     }
-    .sec-lbl::before { content: attr(data-n); color: rgba(180,160,255,0.22); font-size: 11px; }
+    .sec-lbl::before { content: attr(data-n); color: rgba(180,160,255,0.50); font-size: 11px; }
     .sec-h {
       font-size: 30px; font-weight: 300; color: var(--white);
       letter-spacing: -.4px; margin-bottom: 40px;
@@ -364,7 +364,7 @@
       letter-spacing:1.5px; color:var(--teal); display:block; margin-bottom:4px;
     }
     .tl-t { font-size:15px; font-weight:500; color:var(--white); margin-bottom:3px; }
-    .tl-s { font-size:12px; color:var(--muted); margin-bottom:7px; }
+    .tl-s { font-size:12px; color: rgba(140,128,200,0.65); margin-bottom:7px; }
     .tl-b { font-size:13px; color:var(--dim); line-height:1.7; max-width:560px; }
 
     /* ── Build cards ── */
@@ -385,7 +385,7 @@
       color:rgba(180,160,255,.16); margin-bottom:10px; display:block;
     }
     .bcard h3 { font-size:10px; font-weight:600; color:var(--teal); text-transform:uppercase; letter-spacing:1.5px; margin-bottom:8px; }
-    .bcard p  { font-size:12px; color:var(--muted); line-height:1.65; }
+    .bcard p  { font-size:12px; color:var(--dim); line-height:1.65; }
 
     /* ── Projects ── */
     .plist { display:flex; flex-direction:column; counter-reset:p; }
@@ -453,7 +453,7 @@
       display:grid; grid-template-columns:1fr auto; gap:48px; align-items:end;
     }
     .ftr h2 { font-size:38px; font-weight:200; color:var(--white); letter-spacing:-.5px; margin-bottom:12px; }
-    .ftr > .ftr-in > .fl > p { font-size:14px; color:var(--muted); margin-bottom:28px; }
+    .ftr > .ftr-in > .fl > p { font-size:14px; color:var(--dim); margin-bottom:28px; }
     .femail {
       font-size:17px; color:var(--teal); display:inline-block;
       border-bottom:1px solid rgba(180,160,255,.25); padding-bottom:2px;
@@ -1056,7 +1056,7 @@
        Orbit Art — skill planets on labeled ellipses
     ───────────────────────────────── */
     const oc = document.getElementById('oc');
-    const SZ = 380;
+    const SZ = 480;
     oc.width = SZ * 2; oc.height = SZ * 2;
     oc.style.width = SZ + 'px'; oc.style.height = SZ + 'px';
     const octx = oc.getContext('2d');
